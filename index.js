@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const { MongoClient } = require('mongodb');
 const app = express()
+const ObjectId = require('mongodb').ObjectId
 require('dotenv').config()
 const port = process.env.PORT || 5000
 
@@ -21,12 +22,25 @@ async function run() {
         await client.connect();
         const database = client.db('Tech-Foring')
         const jobCollection = database.collection('jobs')
+        const userCollection = database.collection('users')
 
-        // create Post api
+        // create job post api
         app.post('/jobs', async (req, res) => {
             const job = req.body;
             const result = await jobCollection.insertOne(job)
             console.log(result);
+            res.send(result)
+        });
+        // get all jobs api
+        app.get('/allJobs', async (req, res) => {
+            const jobs = jobCollection.find({})
+            const result = await jobs.toArray()
+            res.json(result)
+        })
+        // get jobs by Id
+        app.get('/jobs/:id', async (req, res) => {
+            const id = req.params.id;
+            const result = await jobCollection.findOne({ _id: ObjectId(id) });
             res.send(result)
         })
 
