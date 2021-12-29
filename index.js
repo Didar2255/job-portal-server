@@ -42,6 +42,12 @@ async function run() {
             const id = req.params.id;
             const result = await jobCollection.findOne({ _id: ObjectId(id) });
             res.send(result)
+        });
+        // delete job by id
+        app.delete('/jobs/:id', async (req, res) => {
+            const id = req.params.id;
+            const result = await jobCollection.deleteOne({ _id: ObjectId(id) })
+            res.send(result)
         })
 
     }
